@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../../static/js/h5player.min.js"></script>
+  </head>
+
+  <body>
+    <div id="player"></div>
+
+    <script type="text/javascript">
+      const player = new window.JSPlugin({
+        szId: 'player',
+        szBasePath: '../../static/js',
+        iMaxSplit: 4,
+        iCurrentSplit: 1,
+        iWidth: '100%',
+        iHeight: '500',
+        oStyle: {
+          borderSelect: '#000'
+        }
+      });
+
+      const realplay = 'ws://120.224.215.76:559/openUrl/eCY6gow';
+      const index = player.currentWindowIndex;
+
+      player.JS_Play(realplay, {
+        playURL: realplay,
+        mode: 1
+      }, index).then(
+        () => {
+          console.log('realplay success');
+        },
+        e => {
+          console.log('error');
+        }
+      );
+    </script>
+  </body>
+
+</html>

@@ -1,5 +1,5 @@
 {
-  "name": "my-project",
+  "name": "Agriculture-Development-Enterprise",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -69,8 +69,12 @@
     "@dcloudio/uni-stacktracey": "^2.0.1-alpha-36920221121001",
     "@dcloudio/uni-stat": "^2.0.1-alpha-36920221121001",
     "@vue/shared": "^3.0.0",
+    "axios": "^0.27.2",
     "core-js": "^3.6.5",
+    "crypto-js": "^4.1.1",
     "flyio": "^0.6.2",
+    "node-sass": "^4.14.1",
+    "node-uuid": "^1.4.8",
     "regenerator-runtime": "^0.12.1",
     "vue": "^2.6.11",
     "vue-class-component": "^6.3.2",

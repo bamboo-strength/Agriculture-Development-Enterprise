@@ -1,0 +1,35 @@
+{
+	"name": "TestText",
+	"id": "TestText",
+	"version": "0.2",
+	"description": "connect",
+	"_dp_type": "nativeplugin",
+	"_dp_nativeplugin": {
+		"android": {
+			"plugins": [{
+				"type": "module",
+				"name": "TestText",
+				"class": "io.dcloud.uniplugin.TestText"
+			}],
+			"hooksClass": "",
+			"integrateType": "aar",
+			"dependencies": [],
+			"compileOptions": {
+				"sourceCompatibility": "1.8",
+				"targetCompatibility": "1.8"
+			},
+			"abis": [
+				"armeabi-v7a",
+				"x86",
+				"arm64-v8a"
+			],
+			"minSdkVersion": "21",
+			"permissions": [
+				""
+			],
+			"parameters": {
+
+			}
+		}
+	}
+}
