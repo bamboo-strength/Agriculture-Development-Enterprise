@@ -1,16 +1,21 @@
 <template>
 	<view>
-    {{currentYear}}
+    <text>Copyright <text class="iconfont icon icon-copyright" /> {{currentYear}}</text>
 	</view>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-
-@Component({
-  name: 'Footer'
-})
-export default class Footer extends Vue {
-  currentYear: Number = new Date().getFullYear();
+<script>
+export default {
+  data() {
+    return {
+      currentYear: new Date().getFullYear()
+    }
+  }
 }
 </script>
+<style lang="scss" scoped>
+  .icon {
+    font-size: 16px;
+    padding: 0 4px;
+  }
+</style>

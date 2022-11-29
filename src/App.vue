@@ -1,41 +1,40 @@
-<script lang="ts">
-    import Vue from 'vue';
-    export default Vue.extend({
-        mpType: 'app',
-        onLaunch() {
-          if (!uni.getStorageSync('token')) {
-            uni.reLaunch({
-              url: '/pages/user/login',
-              success() {
-                // #ifdef APP-PLUS
-                plus.navigator.closeSplashscreen()
-                // #endif
-              }
-            });
-          } else {
-            uni.reLaunch({
-              url: '/pages/index/index',
-              success() {
-                // #ifdef APP-PLUS
-                plus.navigator.closeSplashscreen()
-                // #endif
-              }
-            })
+<script>
+	export default {
+		onLaunch: function() {
+			if (!uni.getStorageSync('token')) {
+        uni.reLaunch({
+          url: '/pages/user/login',
+          success() {
+            // #ifdef APP-PLUS
+            plus.navigator.closeSplashscreen()
+            // #endif
           }
-        },
-        onShow() {
-            console.log('App Show')
-        },
-        onHide() {
-            console.log('App Hide')
-        }
-    });
+        });
+      } else {
+        uni.reLaunch({
+          url: '/pages/index/index',
+          success() {
+            // #ifdef APP-PLUS
+            plus.navigator.closeSplashscreen()
+            // #endif
+          }
+        })
+      }
+		},
+		onShow: function() {
+			console.log('App Show')
+		},
+		onHide: function() {
+			console.log('App Hide')
+		}
+	}
 </script>
 
 <style lang="scss">
 	/*每个页面公共css */
 	@import '@/uni_modules/uni-scss/index.scss';
 	@import '@/static/customicons.css';
+  @import '@/common/iconfont.css';
 	// 设置整个项目的背景色
 	page {
 		background-color: #f5f5f5;

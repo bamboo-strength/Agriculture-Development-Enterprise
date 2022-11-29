@@ -73,16 +73,12 @@
     "core-js": "^3.6.5",
     "crypto-js": "^4.1.1",
     "flyio": "^0.6.2",
-    "node-sass": "^4.14.1",
     "node-uuid": "^1.4.8",
     "regenerator-runtime": "^0.12.1",
     "vue": "^2.6.11",
-    "vue-class-component": "^6.3.2",
-    "vue-property-decorator": "^8.0.0",
     "vuex": "^3.2.0"
   },
   "devDependencies": {
-    "@babel/plugin-syntax-typescript": "^7.2.0",
     "@babel/runtime": "~7.17.9",
     "@dcloudio/types": "^3.0.4",
     "@dcloudio/uni-automator": "^2.0.1-alpha-36920221121001",
@@ -96,15 +92,14 @@
     "@dcloudio/webpack-uni-mp-loader": "^2.0.1-alpha-36920221121001",
     "@dcloudio/webpack-uni-pages-loader": "^2.0.1-alpha-36920221121001",
     "@vue/cli-plugin-babel": "~4.5.13",
-    "@vue/cli-plugin-typescript": "~4.5.19",
     "@vue/cli-service": "~4.5.13",
     "babel-plugin-import": "^1.11.0",
     "cross-env": "^7.0.2",
     "jest": "^25.4.0",
     "mini-types": "*",
     "miniprogram-api-typings": "*",
+    "node-sass": "^4.14.1",
     "postcss-comment": "^2.0.0",
-    "typescript": "~4.1.5",
     "vue-template-compiler": "^2.6.11"
   },
   "browserslist": [
