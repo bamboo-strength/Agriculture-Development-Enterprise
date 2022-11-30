@@ -1,6 +1,6 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3797424 */
-  src: url('@/static/iconfont.ttf?t=1669720310184') format('truetype');
+  src: url('@/static/iconfont.ttf?t=1669815840204') format('truetype');
 }
 
 .iconfont {
@@ -9,6 +9,18 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-trucking-order:before {
+  content: "\e63a";
+}
+
+.icon-vehicleNo:before {
+  content: "\ee45";
+}
+
+.icon-idCard:before {
+  content: "\e68d";
 }
 
 .icon-copyright:before {

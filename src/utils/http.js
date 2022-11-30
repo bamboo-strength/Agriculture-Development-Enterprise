@@ -1,40 +1,22 @@
-import axios from 'axios';
-
-class http {
-  static create(config) {
-    const request = axios.create(config);
-    const cancelToken = axios.CancelToken;
-
-    const source = cancelToken.source();
-
-    request.interceptors.response.use(
-      response => {
-
-        if (response.request.responseType === 'blob') {
-          return Promise.resolve(response.data);
+export const request = options => {
+  return new Promise((resolve, reject) => {
+    uni.request({
+      url: options.url,
+      method: options.method || 'GET',
+      data: options.data || {},
+      success: result => {
+        if (result.statusCode === 200) {
+          return resolve(result.data);
         }
-
-        return response.data.data;
+        return reject(result.data)
       },
-      error => {
-        return Promise.reject(error);
+      fail: error => {
+        uni.showToast({
+          icon: 'error',
+          title: error || '系统异常!'
+        })
+        reject(error);
       }
-    );
-
-    request.interceptors.request.use(
-      request => {
-        request.headers = {
-          ...request.headers,
-          'Cache-Control': 'no-cache'
-        };
-        return request;
-      },
-      error => {
-        return Promise.reject(error);
-      }
-    );
-    return request;
-  }
+    })
+  })
 }
-
-export default http;

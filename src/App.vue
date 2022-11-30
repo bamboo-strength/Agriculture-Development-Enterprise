@@ -3,7 +3,7 @@
 		onLaunch: function() {
 			if (!uni.getStorageSync('token')) {
         uni.reLaunch({
-          url: '/pages/user/login',
+          url: '/pages/user/Login',
           success() {
             // #ifdef APP-PLUS
             plus.navigator.closeSplashscreen()
@@ -12,7 +12,7 @@
         });
       } else {
         uni.reLaunch({
-          url: '/pages/index/index',
+          url: '/pages/dashboard/Dashboard',
           success() {
             // #ifdef APP-PLUS
             plus.navigator.closeSplashscreen()
@@ -35,6 +35,7 @@
 	@import '@/uni_modules/uni-scss/index.scss';
 	@import '@/static/customicons.css';
   @import '@/common/iconfont.css';
+  @import '@/common/common.scss';
 	// 设置整个项目的背景色
 	page {
 		background-color: #f5f5f5;
