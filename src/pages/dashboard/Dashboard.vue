@@ -16,7 +16,7 @@
     data() {
       return {
         funcs: [
-          { title: '派车单查询', icon: 'trucking-order', className: 'ui-icon', url: '' }
+          { title: '派车单查询', icon: 'trucking-order', className: 'ui-icon', url: '/pages/trucking/Order' }
         ]
       }
     },
@@ -28,7 +28,10 @@
     methods: {
       gridClick(event) {
         const { detail: { index } } = event;
-        console.log(this.funcs[index]);
+        const item = this.funcs[index];
+        uni.reLaunch({
+          url: item.url
+        })
       }
     }
   }

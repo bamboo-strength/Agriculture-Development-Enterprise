@@ -33,6 +33,13 @@
       }
     }
   }, {
+    "path": "pages/trucking/Order",
+    "style": {
+      "app-plus": {
+        "animationType": "fade-in"
+      }
+    }
+  }, {
     "path": "pages/personal/personal"
   }],
   "tabBar": {
