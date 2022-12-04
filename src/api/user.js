@@ -1,6 +1,5 @@
 import { request } from '@/utils/http';
 import Func from '@/utils/Func';
-import { stringify } from 'qs';
 
 /**
  * 用户登录
@@ -18,16 +17,16 @@ const accountLogin = params => {
 const accountRegieter = params => {
   return request({
     url: process.env.VUE_APP_COMMON_API + '/nfjt/app/mobileUser/register',
-    methods: 'POST',
-    data: Func.toFormData(params)
+    method: 'POST',
+    data: params
   })
 }
 
 const updatePwd = params => {
   return request({
     url: process.env.VUE_APP_COMMON_API + '/nfjt/app/mobileUser/updatePassword',
-    methods: 'POST',
-    data: Func.toFormData(params)
+    method: 'POST',
+    data: params
   });
 }
 

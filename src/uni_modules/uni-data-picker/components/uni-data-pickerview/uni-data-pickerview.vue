@@ -1,12 +1,13 @@
 <template>
   <view class="uni-data-pickerview">
-    <scroll-view v-if="!isCloudDataList" class="selected-area" scroll-x="true">
+    <scroll-view class="selected-area" scroll-x="true">
       <view class="selected-list">
-        <template v-for="(item,index) in selected">
+        <template v-for="(item, index) in selected">
           <view class="selected-item"
-            :class="{'selected-item-active':index==selectedIndex}"
+            :key="index"
+            :class="{ 'selected-item-active' :index == selectedIndex }"
             v-if="item.text" @click="handleSelect(index)">
-            <text>{{item.text}}</text>
+            <text>{{ item.text }}</text>
           </view>
         </template>
       </view>
@@ -14,7 +15,7 @@
     <view class="tab-c">
       <template v-for="(child, i) in dataList">
         <scroll-view class="list" :key="i" v-if="i==selectedIndex" :scroll-y="true">
-          <view class="item" :class="{'is-disabled': !!item.disable}" v-for="(item, j) in child"
+          <view class="item" :class="{'is-disabled': !!item.disable}" v-for="(item, j) in child" :key="j"
             @click="handleNodeClick(item, i, j)">
             <text class="item-text">{{item[map.text]}}</text>
             <view class="check" v-if="selected.length > i && item[map.value] == selected[i].value"></view>
@@ -40,48 +41,37 @@
    * @description uni-data-pickerview
    * @tutorial https://ext.dcloud.net.cn/plugin?id=3796
    * @property {Array} localdata 本地数据，参考
-   * @property {Boolean} step-searh = [true|false] 是否分布查询
    * @value true 启用分布查询，仅查询当前选中节点
    * @value false 关闭分布查询，一次查询出所有数据
-   * @property {String|DBFieldString} self-field 分布查询当前字段名称
-   * @property {String|DBFieldString} parent-field 分布查询父字段名称
-   * @property {String|DBCollectionString} collection 表名
-   * @property {String|DBFieldString} field 查询字段，多个字段用 `,` 分割
-   * @property {String} orderby 排序字段及正序倒叙设置
-   * @property {String|JQLString} where 查询条件
    */
   export default {
     name: 'UniDataPickerView',
     emits: ['nodeclick', 'change', 'datachange', 'update:modelValue'],
     mixins: [dataPicker],
     props: {
-      managedMode: {
-        type: Boolean,
-        default: false
-      },
       ellipsis: {
         type: Boolean,
         default: true
       }
     },
     created() {
-      if (!this.managedMode) {
-        this.$nextTick(() => {
-          this.loadData();
-        })
-      }
+      this.$nextTick(() => {
+        this.loadLocalData();
+      })
     },
     methods: {
       onPropsChange() {
         this._treeData = [];
         this.selectedIndex = 0;
         this.$nextTick(() => {
-          this.loadData();
+          this.loadLocalData();
         })
       },
+
       handleSelect(index) {
         this.selectedIndex = index;
       },
+
       handleNodeClick(item, i, j) {
         if (item.disable) {
           return;
@@ -115,31 +105,13 @@
         } = this._updateBindData()
 
         // 本地数据
-        if (this.isLocalData) {
-          this.onSelectedChange(node, (!hasNodes || isleaf))
-        } else if (this.isCloudDataList) { // Cloud 数据 (单列)
-          this.onSelectedChange(node, true)
-        } else if (this.isCloudDataTree) { // Cloud 数据 (树形)
-          if (isleaf) {
-            this.onSelectedChange(node, node.isleaf)
-          } else if (!hasNodes) { // 请求一次服务器以确定是否为叶子节点
-            this.loadCloudDataNode((data) => {
-              if (!data.length) {
-                node.isleaf = true
-              } else {
-                this._treeData.push(...data)
-                this._updateBindData(node)
-              }
-              this.onSelectedChange(node, node.isleaf)
-            })
-          }
-        }
+        this.onSelectedChange(node, (!hasNodes || isleaf))
       },
       updateData(data) {
         this._treeData = data.treeData
         this.selected = data.selected
         if (!this._treeData.length) {
-          this.loadData()
+          this.loadLocalData()
         } else {
           //this.selected = data.selected
           this._updateBindData()

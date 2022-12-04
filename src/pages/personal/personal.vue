@@ -1,6 +1,5 @@
 <template>
-  <view>
-    
+  <view class="ui-body" style="height: 100%;">
   </view>
 </template>
 
@@ -8,11 +7,11 @@
   export default {
     data() {
       return {
-        
+
       }
     },
     methods: {
-      
+
     }
   }
 </script>

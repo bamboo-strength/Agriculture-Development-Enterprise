@@ -3,7 +3,7 @@
     <view class="user-content">
       <view style="height: var(--status-bar-height)"></view>
       <view class="user-layout-header">农发公司</view>
-      <view class="user-layout-desc">（司机端）</view>
+      <view class="user-layout-desc"></view>
       <view class="user-main">
         <slot></slot>
       </view>
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import Footer from '@/components/footer.vue';
+  import Footer from '@/components/Footer/Footer.vue';
 
   export default {
     name: 'UserLayout',

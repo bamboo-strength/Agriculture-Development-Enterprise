@@ -23,24 +23,67 @@
   }, {
     "path": "pages/dashboard/Dashboard",
     "style": {
-      "navigationBarTextStyle": "white",
+      "navigationBarTextStyle": "black",
       "app-plus": {
         "titleNView": {
-          "titleText": "首页（司机端）",
-          "titleColor": "#FFF",
-          "backgroundColor": "#4581f5"
+          "titleText": "首页",
+          "titleColor": "#4581f5",
+          "backgroundColor": "#FFF"
         }
       }
     }
   }, {
     "path": "pages/trucking/Order",
     "style": {
+      "navigationBarTextStyle": "black",
+      "navigationBarBackgroundColor": "#FFF",
       "app-plus": {
-        "animationType": "fade-in"
+        "animationType": "fade-in",
+        "titleNView": false
       }
     }
   }, {
-    "path": "pages/personal/personal"
+      "path": "pages/trucking/RetailInverstorApply",
+      "style":  {
+         "navigationBarTextStyle": "black",
+         "navigationBarBackgroundColor": "#FFF",
+         "app-plus": {
+           "animationType": "fade-in",
+           "titleNView": false
+         }
+      }
+  }, {
+      "path": "pages/monitor/Monitor",
+      "style":  {
+         "navigationBarTextStyle": "black",
+         "navigationBarBackgroundColor": "#FFF",
+         "app-plus": {
+           "animationType": "fade-in",
+           "titleNView": false
+         }
+      }
+  }, {
+      "path": "pages/trucking/MajorCustomApply",
+      "style":  {
+         "navigationBarTextStyle": "black",
+         "navigationBarBackgroundColor": "#FFF",
+         "app-plus": {
+           "animationType": "fade-in",
+           "titleNView": false
+         }
+      }
+  }, {
+    "path": "pages/personal/personal",
+    "style":  {
+       "navigationBarTextStyle": "black",
+       "app-plus": {
+         "titleNView": {
+           "titleText": "我的",
+           "titleColor": "#4581f5",
+           "backgroundColor": "#FFF"
+         }
+       }
+    }
   }],
   "tabBar": {
   	"color": "#C0C4CC",
@@ -56,7 +99,7 @@
   		{
   			"pagePath": "pages/personal/personal",
   			"iconPath": "static/images/tab-my.png",
-  			"selectedIconPath": "static/tab-my-current.png",
+  			"selectedIconPath": "static/images/tab-my-current.png",
   			"text": "我的"
   		}
   	]

@@ -3,7 +3,8 @@
 		<span v-if="label" class="uni-label-text hide-on-phone">{{label + '：'}}</span>
 		<view class="uni-stat-box" :class="{'uni-stat__actived': current}">
 			<view class="uni-select"  :class="{'uni-select--disabled':disabled}">
-				<view class="uni-select__input-box" @click="toggleSelector">
+        <text v-if="prefixIcon" :class="`iconfont uni-icon icon-${prefixIcon}`"></text>
+				<view :style="styleObject" class="uni-select__input-box" @click="toggleSelector">
 					<view v-if="current" class="uni-select__input-text">{{current}}</view>
 					<view v-else class="uni-select__input-text uni-select__input-placeholder">{{typePlaceholder}}</view>
 					<uni-icons v-if="current && clear" type="clear" color="#c0c4cc" size="24" @click="clearVal" />
@@ -47,12 +48,16 @@
 		name: "uni-stat-select",
 		mixins: [uniCloud.mixinDatacom || {}],
 		data() {
+      const { prefixIcon } = this.$props;
 			return {
 				showSelector: false,
 				current: '',
 				mixinDatacomResData: [],
 				apps: [],
-				channels: []
+				channels: [],
+        styleObject: {
+          paddingLeft: `${prefixIcon ? 0 : 10}px`
+        }
 			};
 		},
 		props: {
@@ -78,6 +83,9 @@
 				type: String,
 				default: '请选择'
 			},
+      prefixIcon: {
+        type: String
+      },
 			emptyTips: {
 				type: String,
 				default: '无选项'
@@ -283,8 +291,7 @@
 		border: 1px solid $uni-border-3;
 		box-sizing: border-box;
 		border-radius: 4px;
-		padding: 0 5px;
-		padding-left: 10px;
+		padding: 0 5px 0 0;
 		position: relative;
 		/* #ifndef APP-NVUE */
 		display: flex;
@@ -310,6 +317,12 @@
 		padding-right: 10px;
 		color: $uni-secondary-color;
 	}
+  
+  .uni-icon {
+    color: rgb(192, 196, 204);
+    font-size: 22px;
+    padding: 0 5px;
+  }
 
 	.uni-select__input-box {
 		height: 35px;

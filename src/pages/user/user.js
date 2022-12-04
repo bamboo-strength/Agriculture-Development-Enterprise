@@ -25,16 +25,22 @@ const userLoginRule = {
 };
 
 const userForm = {
+  // 注册类型
+  roleType: '1',
   // 姓名
   userName: null,
   // 登录名
   loginName: null,
   // 密码
   password: null,
+  // 客户编号
+  custNo: null,
   // 身份证号
   idCard: null,
   // 车牌号
-  vehicleNo: null
+  vehicleNo: null,
+  // 单位信息
+  organizationId: null
 }
 
 const userRule = {
@@ -74,27 +80,11 @@ const userRule = {
       }
     ]
   },
-  idCard: {
+  organizationId: {
     rules: [
       {
         required: true,
-        errorMessage: '请输入身份证号'
-      },
-      {
-        pattern: /^[1-9][0-9]{5}(?:18|19|20)[0-9]{2}(?:0[1-9]|10|11|12)(?:0[1-9]|[1-2][0-9]|30|31)[0-9]{3}[0-9Xx]$/,
-        errorMessage: '请输入有效的身份证号'
-      }
-    ]
-  },
-  vehicleNo: {
-    rules: [
-      {
-        required: true,
-        errorMessage: '请输入车牌号'
-      },
-      {
-        pattern: /^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-HJ-NP-Z][A-HJ-NP-Z0-9]{4,5}[A-HJ-NP-Z0-9挂学警港澳]$/,
-        errorMessage: '请输入有效的车牌号'
+        errorMessage: '请选择单位信息'
       }
     ]
   }

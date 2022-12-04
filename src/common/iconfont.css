@@ -1,6 +1,6 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3797424 */
-  src: url('@/static/iconfont.ttf?t=1669815840204') format('truetype');
+  src: url('@/static/iconfont.ttf?t=1670158781111') format('truetype');
 }
 
 .iconfont {
@@ -9,6 +9,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-monitor:before {
+  content: "\e600";
+}
+
+.icon-dispatch:before {
+  content: "\e62d";
+}
+
+.icon-custom:before {
+  content: "\e613";
+}
+
+.icon-role:before {
+  content: "\e648";
+}
+
+.icon-unit:before {
+  content: "\e649";
+}
+
+.icon-order:before {
+  content: "\e645";
 }
 
 .icon-trucking-order:before {

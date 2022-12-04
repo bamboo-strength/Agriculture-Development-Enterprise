@@ -4,9 +4,8 @@
 			<text>{{label}}</text>
 		</view>
 		<view class="uni-combox__input-box">
-			<input class="uni-combox__input" type="text" :placeholder="placeholder" 
-			placeholder-class="uni-combox__input-plac" v-model="inputVal" @input="onInput" @focus="onFocus" 
-@blur="onBlur" />
+			<input class="uni-combox__input" type="text" :placeholder="placeholder"
+			placeholder-class="uni-combox__input-plac" v-model="inputVal" @input="onInput" @focus="onFocus" @blur="onBlur" />
 			<uni-icons :type="showSelector? 'top' : 'bottom'" size="14" color="#999" @click="toggleSelector">
 			</uni-icons>
 		</view>
@@ -16,9 +15,9 @@
 				<view class="uni-combox__selector-empty" v-if="filterCandidatesLength === 0">
 					<text>{{emptyTips}}</text>
 				</view>
-				<view class="uni-combox__selector-item" v-for="(item,index) in filterCandidates" :key="index" 
-				@click="onSelectorClick(index)">
-					<text>{{item}}</text>
+				<view class="uni-combox__selector-item" v-for="(item, index) in filterCandidates" :key="index"
+				@click="onSelectorClick(item)">
+					<text>{{item[title]}}</text>
 				</view>
 			</scroll-view>
 		</view>
@@ -40,6 +39,10 @@
 	export default {
 		name: 'uniCombox',
 		emits: ['input', 'update:modelValue'],
+    model: {
+      event: 'change.value',
+      prop: 'value'
+    },
 		props: {
 			border: {
 				type: Boolean,
@@ -53,6 +56,14 @@
 				type: String,
 				default: 'auto'
 			},
+      combox: {
+        type: String,
+        default: 'combox'
+      },
+      title: {
+        type: String,
+        default: 'title'
+      },
 			placeholder: {
 				type: String,
 				default: ''
@@ -67,23 +78,25 @@
 				type: String,
 				default: '无匹配项'
 			},
-			// #ifndef VUE3
+      remote: {
+        type: Boolean,
+        default: false
+      },
+      delay: {
+        type: Number,
+        default: 300
+      },
 			value: {
 				type: [String, Number],
 				default: ''
-			},
-			// #endif
-			// #ifdef VUE3
-			modelValue: {
-				type: [String, Number],
-				default: ''
-			},
-			// #endif
+			}
 		},
 		data() {
 			return {
 				showSelector: false,
-				inputVal: ''
+				inputVal: '',
+        inputKey: '',
+        timer: null
 			}
 		},
 		computed: {
@@ -94,6 +107,9 @@
 				return `width: ${this.labelWidth}`
 			},
 			filterCandidates() {
+        if (this.remote) {
+          return this.candidates;
+        }
 				return this.candidates.filter((item) => {
 					return item.toString().indexOf(this.inputVal) > -1
 				})
@@ -103,22 +119,12 @@
 			}
 		},
 		watch: {
-			// #ifndef VUE3
 			value: {
 				handler(newVal) {
-					this.inputVal = newVal
+					this.inputKey = newVal;
 				},
 				immediate: true
-			},
-			// #endif
-			// #ifdef VUE3
-			modelValue: {
-				handler(newVal) {
-					this.inputVal = newVal
-				},
-				immediate: true
-			},
-			// #endif
+			}
 		},
 		methods: {
 			toggleSelector() {
@@ -132,18 +138,30 @@
 					this.showSelector = false
 				}, 153)
 			},
-			onSelectorClick(index) {
-				this.inputVal = this.filterCandidates[index]
+			onSelectorClick(item) {
+				this.inputVal = item[this.title]
 				this.showSelector = false
-				this.$emit('input', this.inputVal)
-				this.$emit('update:modelValue', this.inputVal)
+				this.$emit('change.value', item[this.combox]);
 			},
 			onInput() {
+        if (!this.remote) {
+          setTimeout(() => {
+            this.$emit('input', this.inputVal);
+          })
+          return;
+        }
+        this.timer = new Date().getTime();
 				setTimeout(() => {
-					this.$emit('input', this.inputVal)
-					this.$emit('update:modelValue', this.inputVal)
-				})
-			}
+          this.onInputEmit();
+				}, this.delay)
+			},
+      
+      onInputEmit() {
+        if (new Date().getTime() - this.timer < this.delay) {
+          return;
+        }
+        this.$emit('input', this.inputVal)
+      }
 		}
 	}
 </script>

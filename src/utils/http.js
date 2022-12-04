@@ -8,12 +8,13 @@ export const request = options => {
         if (result.statusCode === 200) {
           return resolve(result.data);
         }
+
         return reject(result.data)
       },
       fail: error => {
         uni.showToast({
           icon: 'error',
-          title: error || '系统异常!'
+          title: error.errMsg || '系统异常!'
         })
         reject(error);
       }

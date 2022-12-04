@@ -73,6 +73,7 @@
     "core-js": "^3.6.5",
     "crypto-js": "^4.1.1",
     "flyio": "^0.6.2",
+    "lodash": "^4.17.21",
     "node-uuid": "^1.4.8",
     "qs": "^6.6.0",
     "regenerator-runtime": "^0.12.1",
