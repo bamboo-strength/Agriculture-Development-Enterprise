@@ -1,7 +1,7 @@
 <script>
 	export default {
 		onLaunch: function() {
-			if (!uni.getStorageSync('token')) {
+			if (uni.getStorageSync('token')) {
         uni.reLaunch({
           url: '/pages/user/Login',
           success() {

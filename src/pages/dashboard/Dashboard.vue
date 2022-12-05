@@ -19,7 +19,10 @@
           { title: '派车单查询', icon: 'trucking-order', className: 'ui-icon', url: '/pages/trucking/Order' },
           { title: '大客户销售派车', icon: 'dispatch', className: 'ui-icon', url: '/pages/trucking/MajorCustomApply' },
           { title: '散户销售派车', icon: 'dispatch', className: 'ui-icon', url: '/pages/trucking/RetailInverstorApply' },
-          { title: '实时监控', icon: 'monitor', className: 'ui-icon', url: '/pages/monitor/Monitor' }
+          { title: '实时监控', icon: 'monitor', className: 'ui-icon', url: '/pages/monitor/Monitor' },
+          { title: '项目报表', icon: 'report', className: 'ui-icon', url: '/pages/report/report' },
+          { title: '项目公示', icon: 'project', className: 'ui-icon', url: '/pages/project/project' },
+          { title: '榜单打印', icon: 'print', className: 'ui-icon', url: '/pages/print/print' }
         ]
       }
     },

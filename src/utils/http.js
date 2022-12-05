@@ -4,6 +4,7 @@ export const request = options => {
       url: options.url,
       method: options.method || 'GET',
       data: options.data || {},
+      header: options.header || {},
       success: result => {
         if (result.statusCode === 200) {
           return resolve(result.data);

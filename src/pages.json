@@ -84,6 +84,36 @@
          }
        }
     }
+  }, {
+    "path": "pages/project/project",
+    "style":  {
+      "navigationBarTextStyle": "black",
+      "navigationBarBackgroundColor": "#FFF",
+      "app-plus": {
+        "animationType": "fade-in",
+        "titleNView": false
+      }
+    }
+  }, {
+    "path": "pages/report/report",
+    "style":  {
+      "navigationBarTextStyle": "black",
+      "navigationBarBackgroundColor": "#FFF",
+      "app-plus": {
+        "animationType": "fade-in",
+        "titleNView": false
+      }
+    }
+  }, {
+    "path": "pages/print/print",
+    "style":  {
+      "navigationBarTextStyle": "black",
+      "navigationBarBackgroundColor": "#FFF",
+      "app-plus": {
+        "animationType": "fade-in",
+        "titleNView": false
+      }
+    }
   }],
   "tabBar": {
   	"color": "#C0C4CC",

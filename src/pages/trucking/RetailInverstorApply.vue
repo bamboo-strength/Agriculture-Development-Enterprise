@@ -161,6 +161,8 @@
             ]
           })
       },
+      
+      searchVehicle() {},
 
       // 客户信息检索
       searchCust($event) {
