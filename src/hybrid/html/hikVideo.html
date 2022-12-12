@@ -4,38 +4,95 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="../../static/js/h5player.min.js"></script>
+    <script type="text/javascript" src="../../static/js/uni.webview.1.5.4.js"></script>
+
+    <style lang="css">
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
   </head>
 
   <body>
     <div id="player"></div>
 
     <script type="text/javascript">
-      const player = new window.JSPlugin({
-        szId: 'player',
-        szBasePath: '../../static/js',
-        iMaxSplit: 4,
-        iCurrentSplit: 1,
-        iWidth: '100%',
-        iHeight: '500',
-        oStyle: {
-          borderSelect: '#000'
+      function createPlayer() {
+        const height = document.body.clientWidth;
+        const player = new window.JSPlugin({
+          szId: 'player',
+          szBasePath: '../../static/js',
+          iMaxSplit: 1,
+          iCurrentSplit: 1,
+          iWidth: '100%',
+          iHeight: height,
+          bSupporDoubleClickFull: false,
+          oStyle: {
+            borderSelect: '#FFF'
+          }
+        });
+        
+        return player;
+      }
+
+      function getQuery(name) {
+        // 正则：[找寻'&' + 'url参数名字' = '值' + '&']（'&'可以不存在）
+        const reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        const r = window.location.search.substr(1).match(reg);
+        if(r !== null) {
+            // 对参数值进行解码
+            return decodeURIComponent(r[2]);
         }
-      });
+        return null;
+      }
 
-      const realplay = 'ws://120.224.215.76:559/openUrl/eCY6gow';
-      const index = player.currentWindowIndex;
+      function preview(player, realplay) {
+        const index = player.currentWindowIndex;
+        player.JS_Play(realplay, {
+          playURL: realplay,
+          mode: 1
+        }, index).then(
+          () => {
+            console.log('realplay success!');
+          },
+          e => {
+            console.log('error');
+          }
+        );
+      }
 
-      player.JS_Play(realplay, {
-        playURL: realplay,
-        mode: 1
-      }, index).then(
-        () => {
-          console.log('realplay success');
+      const player = createPlayer();
+
+      player.JS_SetWindowControlCallback({
+        pluginErrorHandler: function (iWndIndex, iErrorCode, oError) {  //插件错误回调
+          uni.postMessage({
+            data: {
+              type: 'error',
+              error: oError
+            }
+          })
         },
-        e => {
-          console.log('error');
+        windowFullCcreenChange: function (bFull) {
+          player.JS_Resize().then(() => {
+              console.log('JS_RESIZE success!');
+            }, (err) => {
+              console.log(err);
+            })
+          uni.postMessage({
+            data: {
+              type: 'fullscreen',
+              fullscreen: bFull
+            }
+          })
         }
-      );
+      })
+
+      const realplay = getQuery('realplay');
+
+      if (realplay !== '') {
+        preview(player, realplay);
+      }
     </script>
   </body>
 

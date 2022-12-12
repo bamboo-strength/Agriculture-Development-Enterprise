@@ -96,9 +96,6 @@
     },
     options: {
       styleIsolation: 'shared'
-    },
-    onBackPress(options) {
-      console.log(options);
     }
   }
 </script>

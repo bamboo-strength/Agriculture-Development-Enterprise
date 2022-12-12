@@ -3,13 +3,13 @@ import { formatDate } from '@/utils/date';
 const formatType = 'yyyy-mm-dd HH:MM:SS';
 
 const today = new Date();
-const yesterday = today.getTime() - 1000 * 60 * 60 * 24 * 3;
+const lastMonth = today.getTime() - 1000 * 60 * 60 * 24 * 30;
 
 const truckingOrderForm = {
   custNo: null, // 客户编号
   organizationId: null, // 所属单位编号
   materialNo: null, // 物资编号
-  startDate: formatDate(new Date(yesterday), formatType), // 开始时间
+  startDate: formatDate(new Date(lastMonth), formatType), // 开始时间
   endDate: formatDate(today, formatType), // 结束时间
   vehicleNo: null, // 车号
   businessType: null, // 业务类型
@@ -37,10 +37,18 @@ const vehicleStatus = [
   { value: '5', text: '出门岗' },
 ];
 
+const isOverStatus = [
+  { combox: '0', title: '否' },
+  { combox: '1', title: '是' }
+]
+
 // 大客户销售派车单申请表信息
 const mApplyForm = {
+  dispatchNo: null, // 派车单号
   custNo: null, // 客户编号
+  custName: null, // 客户名称
   materialNo: null, // 物资编号
+  materialName: null, // 物资名称
   vehicleNo: null, // 车号
   orderMainNo: null, // 主合同号
   orderSubNo: null, // 子合同号
@@ -50,11 +58,12 @@ const mApplyForm = {
   shipmentNum: null, // 发运次数  0：不限制 >0：具体次数
   isOverLenghFlag: null, // 超长车标志0否1是
   organizationId: null, //组织单位id
-  appcreateBy: null // app创建者
+  organizationName: null // 组织单位名称
 };
 
 // 散户销售派车单申请表信息
 const rApplyForm = {
+  dispatchNo: null, // 派车单号
   custNo: null, // 客户编号
   materialNo: null, // 物资编号
   vehicleNo: null, // 车号
@@ -62,10 +71,8 @@ const rApplyForm = {
   driverName: null, // 司机姓名
   idCard: null, // 司机身份证号
   shipmentNum: null, // 发运次数  0：不限制 >0：具体次数
-  cycleTime: null, // 循环结束时间
   isOverLenghFlag: null, // 超长车标志
-  organizationId: null, //组织单位id
-  appcreateBy: null // app创建者
+  organizationId: null //组织单位id
 }
 
 export const truckingOrder = {
@@ -74,5 +81,6 @@ export const truckingOrder = {
   rApplyForm,
   orderItem,
   businessTypes,
-  vehicleStatus
+  vehicleStatus,
+  isOverStatus
 }

@@ -30,17 +30,28 @@
         </uni-group>
         <uni-group top="0" class="ui-group">
           <uni-forms-item label="车号:">
-            <uni-combox v-model="applyForm.vehicleNo" :candidates="vehicleData" combox="vehicleNo" title="vehicleNo" remote :border="false" placeholder="请输入车号信息" @input="searchVehicle"></uni-combox>
+            <uni-combox
+              v-model="applyForm.vehicleNo"
+              :candidates="vehicleData"
+              combox="vehicleNo"
+              title="vehicleNo"
+              remote
+              :border="false"
+              placeholder="请选择车号信息"
+              @input="searchVehicle"
+              @change="vehicleChange"
+              @blur="vehicleBlur"
+            ></uni-combox>
           </uni-forms-item>
         </uni-group>
         <uni-group top="0" class="ui-group">
           <uni-forms-item label="司机姓名:">
-            <uni-easyinput v-model="applyForm.driverName" type="text" :inputBorder="false" placeholder="请输入司机姓名" />
+            <uni-easyinput v-model="applyForm.driverName" type="text" :inputBorder="false" class="uni-input--disabled" :disabled="vehicleDisable" placeholder="请输入司机姓名" />
           </uni-forms-item>
         </uni-group>
         <uni-group top="0" class="ui-group">
           <uni-forms-item label="身份证号:">
-            <uni-easyinput v-model="applyForm.idCard" type="idcard" :inputBorder="false" placeholder="请输入身份证号" />
+            <uni-easyinput v-model="applyForm.idCard" type="idcard" :inputBorder="false" class="uni-input--disabled" :disabled="vehicleDisable" placeholder="请输入身份证号" />
           </uni-forms-item>
         </uni-group>
         <uni-group top="0" class="ui-group">
@@ -54,12 +65,12 @@
         </uni-group>
         <uni-group top="0" class="ui-group">
           <uni-forms-item label="发运次数:">
-            <uni-easyinput v-model="applyForm.shipmentNum" type="text" :inputBorder="false" placeholder="发运次数" />
+            <uni-easyinput v-model="applyForm.shipmentNum" type="number" :inputBorder="false" placeholder="发运次数" />
           </uni-forms-item>
         </uni-group>
         <uni-group top="0" class="ui-group">
           <uni-forms-item label="超长车标志:">
-            <uni-easyinput v-model="applyForm.isOverLenghFlag" type="text" :inputBorder="false" placeholder="超长车标志" />
+            <uni-combox v-model="applyForm.isOverLenghFlag" :candidates="isOverStatus" :border="false" placeholder="请选择超长车标志"></uni-combox>
           </uni-forms-item>
         </uni-group>
       </uni-forms>
@@ -74,19 +85,41 @@
 <script>
   import _ from 'lodash';
   import { commonApi } from '@/api/common';
+  import { truckingOrderApi } from '@/api/truckingOrder';
   import { truckingOrder } from './index';
+  import CommonMixin from '@/mixins/common.mixin';
 
   export default {
     name: 'RetailInverstorApply',
+
+    mixins: [CommonMixin],
+
     data() {
       return {
         applyForm: _.cloneDeep(truckingOrder.rApplyForm),
-        custData: [],
-        materialData: [],
-        unitData: [],
-        vehicleData: []
+        vehicleDisable: true,
+        isOverStatus: truckingOrder.isOverStatus,
+        dispatchId: null
       }
     },
+
+    created() {
+      this.searchVehicle();
+      this.searchCust();
+      this.searchMaterial();
+      this.getUnit();
+    },
+
+    onLoad(data) {
+      if (Object.keys(data).length) {
+        this.dispatchId = data.dispatchId;
+
+        console.log(data);
+
+        this.getDispatch(data.dispatchId);
+      }
+    },
+
     methods: {
       goBack() {
         uni.reLaunch({
@@ -94,91 +127,100 @@
         })
       },
 
-      getUnit() {
-        commonApi.getUnit()
+      getDispatch(dispatchId) {
+        truckingOrderApi.getDispatchById({ id: dispatchId })
           .then(result => {
-            const params = this.convert(result.list);
+            const { dispatchNo, custNo, materialNo, organization,
+              vehicleNo, driverName, idCard, preamount, shipmentNum, isOverLenghFlag } = result;
 
-            this.unitData = [
-              ...params
-            ]
+            Object.assign(this.applyForm, {
+              dispatchNo,
+              custNo,
+              materialNo,
+              organizationId: organization.id,
+              vehicleNo,
+              driverName,
+              idCard,
+              preamount,
+              shipmentNum,
+              isOverLenghFlag
+            })
           })
       },
 
-      //  转换单位信息
-      convert(nodes) {
-        const result = [];
-        const treeObj = params => {
-          return {
-            value: params.id,
-            text: params.name,
-            children: []
-          }
+      // 车号信息选中处理。
+      vehicleChange($event) {
+        const { driverName, idCard } = $event;
+        this.vehicleDisable = true;
+        Object.assign(this.applyForm, {
+          driverName,
+          idCard
+        })
+      },
+
+      vehicleBlur() {
+        this.vehicleDisable = false;
+      },
+
+      validate() {
+        let flag = false;
+        const keys = {
+          organizationId: '请选择所属单位!',
+          materialNo: '请选择物资信息!',
+          custNo: '请选择客户信息!',
+          vehicleNo: '请选择车号信息!',
+          driverName: '请输入司机姓名!',
+          preamount: '请输入预装量!',
+          shipmentNum: '请输入发运次数!',
+          isOverLenghFlag: '请选择超长车标志'
         }
 
-        for (let i = 0; i < nodes.length; i++) {
-          if (nodes[i].parentId === '0') {
-            const obj = treeObj(nodes[i]);
-            result.push(obj);
-            nodes.splice(i, 1);
-            i--;
+        Object.keys(keys).forEach(v => {
+          if (flag) {
+            return false
           }
+          if (!this.applyForm[v]) {
+            flag = true;
+            uni.showToast({
+              icon: 'none',
+              title: keys[v]
+            })
+          }
+        })
+        return flag;
+      },
+
+      submit() {
+        if (this.validate()) {
+          return;
         }
 
-        const _generate = (chiArr) => {
-          if (!chiArr.length) {
-            return;
-          }
-          for (let i = 0; i < chiArr.length; i++) {
-            for (var j = 0; j < nodes.length; j++) {
-              if (chiArr[i].value === nodes[j].parentId) {
-                const obj = treeObj(nodes[j]);
-                chiArr[i].children.push(obj);
-                nodes.splice(j, 1);
-                j--;
+        const user = uni.getStorageSync('userBaseEntity');
+        const params = {
+          ...this.applyForm,
+          appcreateBy: user.id
+        }
+
+        truckingOrderApi.insertSaleRetail(params)
+          .then(result => {
+            if (!result.success) {
+              return uni.showToast({
+                icon: 'none',
+                title: result.msg
+              })
+            }
+
+            uni.showToast({
+              icon: 'success',
+              title: result.msg,
+              success: () => {
+                uni.reLaunch({
+                  url: '/pages/trucking/Order'
+                })
               }
-            }
-
-            _generate(chiArr[i].children);
-          }
-        }
-
-        _generate(result);
-
-        return result;
-      },
-
-      // 物资检索
-      searchMaterial($event) {
-        commonApi.getMaterial({ spellCode: $event })
-          .then(result => {
-            if (!result.success) {
-              this.materialData = [];
-              return;
-            }
-            this.materialData = [
-              ...result.list
-            ]
+            })
           })
-      },
-      
-      searchVehicle() {},
-
-      // 客户信息检索
-      searchCust($event) {
-        commonApi.getCust({ spellCode: $event })
-          .then(result => {
-            if (!result.success) {
-              this.custData = [];
-              return;
-            }
-            this.custData = [
-              ...result.list
-            ]
-          })
-      },
-
-      submit() {}
+      }
     }
   }
 </script>
@@ -187,6 +229,7 @@
   /deep/ .uni-input--disabled
     > .uni-easyinput__content {
     background-color: #FFF !important;
+    color: rgb(51, 51, 51);
 
     .uni-easyinput__placeholder-class {
       color: #999 !important;

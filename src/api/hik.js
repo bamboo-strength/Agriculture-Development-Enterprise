@@ -1,5 +1,6 @@
 import { request } from '@/utils/http';
 import * as uuid from 'node-uuid';
+import CryptoJS from 'crypto-js';
 import defaultSettings from '@/utils/defaultSettings';
 
 const { appKey, appSecret } = defaultSettings;
@@ -32,11 +33,11 @@ const getToken = () => {
     body: null,
     header: {
       ...defaultHeader,
-      x-ca-timestamp: timestamp,
-      x-ca-nonce: nonce,
-      x-ca-key: appKey,
-      x-ca-signature-headers: 'x-ca-key,x-ca-nonce,x-ca-timestamp',
-      x-ca-signature: sign
+      'x-ca-timestamp': timestamp,
+      'x-ca-nonce': nonce,
+      'x-ca-key': appKey,
+      'x-ca-signature-headers': 'x-ca-key,x-ca-nonce,x-ca-timestamp',
+      'x-ca-signature': sign
     }
   })
 }
@@ -49,23 +50,26 @@ const getStreaning = params => {
   return request({
     url: process.env.VUE_APP_HIK_APP + '/artemis/api/video/v2/cameras/previewURLs',
     method: 'POST',
-    params,
+    data: params,
     header: {
       ...defaultHeader,
-      access_token: accessToken
+      'access_token': accessToken
     }
   })
 }
 
+/**
+ * 分页获取监控点资源
+ */
 const getCanvas = params => {
   const accessToken = uni.getStorageSync('accessToken');
   return request({
     url: process.env.VUE_APP_HIK_APP + '/artemis/api/resource/v1/cameras',
     method: 'POST',
-    params,
+    data: params,
     header: {
       ...defaultHeader,
-      access_token: accessToken
+      'access_token': accessToken
     }
   })
 }

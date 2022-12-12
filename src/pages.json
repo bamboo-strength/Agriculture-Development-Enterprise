@@ -43,6 +43,16 @@
       }
     }
   }, {
+    "path": "pages/trucking/details",
+    "style": {
+      "navigationBarTextStyle": "black",
+      "navigationBarBackgroundColor": "#FFF",
+      "app-plus": {
+        "animationType": "fade-in",
+        "titleNView": false
+      }
+    }
+  }, {
       "path": "pages/trucking/RetailInverstorApply",
       "style":  {
          "navigationBarTextStyle": "black",
@@ -52,6 +62,16 @@
            "titleNView": false
          }
       }
+  }, {
+    "path": "pages/Contract/Contract",
+    "style":  {
+       "navigationBarTextStyle": "black",
+       "navigationBarBackgroundColor": "#FFF",
+       "app-plus": {
+         "animationType": "fade-in",
+         "titleNView": false
+       }
+    }
   }, {
       "path": "pages/monitor/Monitor",
       "style":  {

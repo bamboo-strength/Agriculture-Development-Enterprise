@@ -26,7 +26,7 @@ const userLoginRule = {
 
 const userForm = {
   // 注册类型
-  roleType: '1',
+  roleType: 1,
   // 姓名
   userName: null,
   // 登录名

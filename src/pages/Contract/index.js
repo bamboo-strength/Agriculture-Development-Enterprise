@@ -1,9 +1,16 @@
+import { formatDate } from '@/utils/date';
+
+const formatType = 'yyyy-mm-dd HH:MM:SS';
+
+const today = new Date();
+const lastMonth = today.getTime() - 1000 * 60 * 60 * 24 * 30;
+
 const searchForm = {
   custNo: null,
   materialCode: null,
   organizationId: null,
-  startDate: null,
-  endDate: null
+  startDate: formatDate(new Date(lastMonth), formatType), // 开始时间
+  endDate: formatDate(today, formatType), // 结束时间
 };
 
 const contractItem = [

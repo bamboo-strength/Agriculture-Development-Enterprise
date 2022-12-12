@@ -16,16 +16,16 @@
       <uni-forms-item name="password">
         <uni-easyinput v-model="userForm.password" class="ul-input" type="password" trim prefixIcon="locked" placeholder="密码" />
       </uni-forms-item>
-      <uni-forms-item v-if="userForm.roleType === '0'" name="custNo">
+      <uni-forms-item v-if="userForm.roleType === 0" name="custNo">
         <uni-easyinput v-model="userForm.custNo" class="ul-input" type="text" trim prefixIcon="defind iconfont icon-custom" placeholder="客户编号" />
       </uni-forms-item>
-      <uni-forms-item v-if="userForm.roleType === '2'" name="idCard">
+      <uni-forms-item v-if="userForm.roleType === 2" name="idCard">
         <uni-easyinput v-model="userForm.idCard" class="ul-input" type="text" trim prefixIcon="defind iconfont icon-idCard" placeholder="身份证号" />
       </uni-forms-item>
-      <uni-forms-item v-if="userForm.roleType === '2'" name="vehicleNo">
+      <uni-forms-item v-if="userForm.roleType === 2" name="vehicleNo">
         <uni-easyinput v-model="userForm.vehicleNo" class="ul-input" type="text" trim prefixIcon="defind iconfont icon-vehicleNo" placeholder="车牌号" />
       </uni-forms-item>
-      <uni-forms-item v-if="userForm.roleType === '1'" name="organizationId">
+      <uni-forms-item v-if="userForm.roleType === 1" name="organizationId">
         <uni-data-picker
           v-model="userForm.organizationId"
           :localdata="unitData"
@@ -60,9 +60,9 @@
         userRule: user.userRule,
         unitData: [],
         roleTypes: [
-          { value: '0', text: '客户端' },
-          { value: '1', text: '矿方端' },
-          { value: '2', text: '司机端' }
+          { value: 0, text: '客户端' },
+          { value: 1, text: '矿方端' },
+          { value: 2, text: '司机端' }
         ]
       }
     },
@@ -78,16 +78,11 @@
             return;
           }
 
-          uni.showLoading({
-            title: '正在进行账户注册, 请稍后...'
-          })
-
           userApi.accountRegieter(form)
             .then(result => {
-              uni.hideLoading();
               if (!result.success) {
                 return uni.showToast({
-                  icon: 'error',
+                  icon: 'none',
                   title: result.msg
                 })
               }
@@ -102,16 +97,13 @@
                 }
               })
             })
-            .catch(error => {
-              uni.hideLoading();
-            })
         })
       },
 
       // 切换注册类型
       onRoleTypeChange($event) {
         this.$refs.userForms.clearValidate()
-        if ($event === '0') {
+        if ($event === 0) {
           if (this.userRule.idCard) delete this.userRule.idCard;
           if (this.userRule.vehicleNo) delete this.userRule.vehicleNo;
           if (this.userRule.organizationId) delete this.userRule.organizationId;
@@ -127,7 +119,7 @@
           })
         }
 
-        if ($event === '1') {
+        if ($event === 1) {
           if (this.userRule.idCard) delete this.userRule.idCard;
           if (this.userRule.vehicleNo) delete this.userRule.vehicleNo;
           if (this.userRule.custNo) delete this.userRule.custNo;
@@ -143,7 +135,7 @@
           })
         }
 
-        if ($event === '2') {
+        if ($event === 2) {
           if (this.userRule.custNo) delete this.userRule.custNo;
           if (this.userRule.organizationId) delete this.userRule.organizationId;
           Object.assign(this.userRule, {
@@ -181,6 +173,9 @@
       getUnit() {
         commonApi.getUnit()
           .then(result => {
+            if (!result.success) {
+              return
+            }
             const params = this.convert(result.list);
 
             this.unitData = [

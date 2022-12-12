@@ -11,8 +11,15 @@
   export default {
     data() {
       return {
-        
+
       }
+    },
+    created() {
+      const system = uni.getSystemInfoSync();
+      const Content = plus.android.importClass('android.content.Context');
+      const print = uni.requireNativePlugin('PrintModule');
+
+      console.log(print);
     },
     methods: {
       goBack() {

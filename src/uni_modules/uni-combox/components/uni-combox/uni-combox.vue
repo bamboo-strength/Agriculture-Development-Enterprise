@@ -4,10 +4,18 @@
 			<text>{{label}}</text>
 		</view>
 		<view class="uni-combox__input-box">
-			<input class="uni-combox__input" type="text" :placeholder="placeholder"
-			placeholder-class="uni-combox__input-plac" v-model="inputVal" @input="onInput" @focus="onFocus" @blur="onBlur" />
-			<uni-icons :type="showSelector? 'top' : 'bottom'" size="14" color="#999" @click="toggleSelector">
-			</uni-icons>
+			<input
+        class="uni-combox__input"
+        type="text"
+        :disabled="disabled"
+        :placeholder="placeholder"
+        placeholder-class="uni-combox__input-plac"
+        v-model="inputVal"
+        @input="onInput"
+        @focus="onFocus"
+        @blur="onBlur"
+      />
+			<uni-icons :type="showSelector? 'top' : 'bottom'" size="14" color="#999" @click="toggleSelector"></uni-icons>
 		</view>
 		<view class="uni-combox__selector" v-if="showSelector">
 			<view class="uni-popper__arrow"></view>
@@ -89,16 +97,22 @@
 			value: {
 				type: [String, Number],
 				default: ''
-			}
+			},
+      disabled: {
+        type: Boolean,
+        default: false
+      }
 		},
 		data() {
 			return {
 				showSelector: false,
 				inputVal: '',
         inputKey: '',
-        timer: null
+        timer: null,
+        isSelect: false
 			}
 		},
+
 		computed: {
 			labelStyle() {
 				if (this.labelWidth === 'auto') {
@@ -110,38 +124,55 @@
         if (this.remote) {
           return this.candidates;
         }
-				return this.candidates.filter((item) => {
-					return item.toString().indexOf(this.inputVal) > -1
-				})
+				return this.candidates;
 			},
 			filterCandidatesLength() {
 				return this.filterCandidates.length
 			}
 		},
-		watch: {
+
+    watch: {
 			value: {
 				handler(newVal) {
-					this.inputKey = newVal;
+          this.inputKey = newVal;
+          if (!newVal) {
+            this.inputVal = null;
+            return;
+          }
+
+          const item = this.filterCandidates.find(v => v[this.combox] === newVal);
+          this.inputVal = item ? item[this.title] : this.inputKey;
 				},
 				immediate: true
 			}
 		},
+
 		methods: {
 			toggleSelector() {
+        if (this.disabled) {
+          return;
+        }
 				this.showSelector = !this.showSelector
 			},
 			onFocus() {
-				this.showSelector = true
+				this.showSelector = true;
 			},
 			onBlur() {
 				setTimeout(() => {
-					this.showSelector = false
+					this.showSelector = false;
+          if (!this.isSelect && this.inputVal) {
+            this.$emit('change.value', this.inputVal)
+            this.$emit('blur');
+          }
+
+          this.isSelect = false;
 				}, 153)
 			},
 			onSelectorClick(item) {
-				this.inputVal = item[this.title]
-				this.showSelector = false
+				this.showSelector = false;
+        this.isSelect = true;
 				this.$emit('change.value', item[this.combox]);
+        this.$emit('change', item);
 			},
 			onInput() {
         if (!this.remote) {
@@ -155,7 +186,7 @@
           this.onInputEmit();
 				}, this.delay)
 			},
-      
+
       onInputEmit() {
         if (new Date().getTime() - this.timer < this.delay) {
           return;

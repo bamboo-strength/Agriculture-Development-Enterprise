@@ -2,7 +2,7 @@
     "name" : "砂石土监管",
     "appid" : "__UNI__DB52A6F",
     "description" : "砂石土监管",
-    "versionName" : "1.0.1",
+    "versionName" : "0.0.2",
     "versionCode" : "100",
     "transformPx" : false,
     "app-plus" : {
@@ -85,6 +85,22 @@
                         "spotlight@2x" : "unpackage/res/icons/80x80.png",
                         "spotlight@3x" : "unpackage/res/icons/120x120.png"
                     }
+                }
+            }
+        },
+        "nativePlugins" : {
+            "PrintModule" : {
+                "__plugin_info__" : {
+                    "name" : "PrintModule",
+                    "description" : "打印",
+                    "platforms" : "Android",
+                    "url" : "",
+                    "android_package_name" : "",
+                    "ios_bundle_id" : "",
+                    "isCloud" : false,
+                    "bought" : -1,
+                    "pid" : "",
+                    "parameters" : {}
                 }
             }
         }

@@ -18,7 +18,10 @@ const accountRegieter = params => {
   return request({
     url: process.env.VUE_APP_COMMON_API + '/nfjt/app/mobileUser/register',
     method: 'POST',
-    data: params
+    data: params,
+    header: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
   })
 }
 

@@ -8,11 +8,12 @@
     <scroll-view scroll-y class="ui-scroll" @scrolltolower="onLoadPager">
       <uni-card
         v-for="(item, index) in truckingOrderData"
+        margin="0 16px 16px"
         spacing="0"
         padding="0"
         :key="index"
-        is-shadow>
-
+        is-shadow
+      >
         <view class="ui-card__content">
           <view class="ui-list-item">
             <text style="color: #777777;">派车单号</text>
@@ -24,8 +25,9 @@
           </view>
         </view>
         <div class="ui-card__footer">
-          <button type="primary" class="ui-button--primary">修 改</button>
-          <button type="warn" class="ui-button--warn">删 除</button>
+          <button type="primary" class="ui-button--primary" @click="details(item)">查 看</button>
+          <button v-if="item.vehicleStatus === '0'" type="primary" class="ui-button--primary" style="margin-left: 16px;" @click="updateDispatch(item)">修 改</button>
+          <button v-if="item.vehicleStatus === '0'" type="warn" class="ui-button--warn" style="margin-left: 16px;" @click="deleteDispatch(item)">删 除</button>
         </div>
       </uni-card>
     </scroll-view>
@@ -80,26 +82,23 @@
   import { truckingOrder } from './index';
   import { commonApi } from '@/api/common';
   import { truckingOrderApi } from '@/api/truckingOrder';
+  import CommonMixin from '@/mixins/common.mixin';
 
   export default {
+    mixins: [CommonMixin],
+
     data() {
       return {
         searchForm: _.cloneDeep(truckingOrder.truckingOrderForm),
-        custData: [],
-        materialData: [],
-        unitData: [],
         businessTypes: truckingOrder.businessTypes,
         vehicleStatus: truckingOrder.vehicleStatus,
-        selectCache: {},
-        pageNum: 1,
-        pageSize: 5,
         truckingOrderData: [],
-        orderItem: truckingOrder.orderItem,
-        completed: false,
-        loadStatus: 'more'
+        orderItem: truckingOrder.orderItem
       }
     },
     created() {
+      this.searchCust();
+      this.searchMaterial();
       this.getUnit();
       this.getPager();
     },
@@ -110,60 +109,6 @@
         })
       },
 
-      getUnit() {
-        commonApi.getUnit()
-          .then(result => {
-            const params = this.convert(result.list);
-
-            this.unitData = [
-              ...params
-            ]
-          })
-      },
-
-      //  转换单位信息
-      convert(nodes) {
-        const result = [];
-        const treeObj = params => {
-          return {
-            value: params.id,
-            text: params.name,
-            children: []
-          }
-        }
-
-        for (let i = 0; i < nodes.length; i++) {
-          if (nodes[i].parentId === '0') {
-            const obj = treeObj(nodes[i]);
-            result.push(obj);
-            nodes.splice(i, 1);
-            i--;
-          }
-        }
-
-        const _generate = (chiArr) => {
-          if (!chiArr.length) {
-            return;
-          }
-          for (let i = 0; i < chiArr.length; i++) {
-            for (var j = 0; j < nodes.length; j++) {
-              if (chiArr[i].value === nodes[j].parentId) {
-                const obj = treeObj(nodes[j]);
-                chiArr[i].children.push(obj);
-                nodes.splice(j, 1);
-                j--;
-              }
-            }
-
-            _generate(chiArr[i].children);
-          }
-        }
-
-        _generate(result);
-
-        return result;
-      },
-
       open() {
         this.$refs.popup.open('bottom');
       },
@@ -172,31 +117,60 @@
         this.$refs.popup.close();
       },
 
-      // 客户信息检索
-      searchCust($event) {
-        commonApi.getCust({ spellCode: $event })
-          .then(result => {
-            if (!result.success) {
-              this.custData = [];
-              return;
-            }
-            this.custData = [
-              ...result.list
-            ]
-          })
+      details($event) {
+        const { id } = $event;
+        uni.navigateTo({
+          url: `/pages/trucking/details?dispatchId=${id}`
+        })
       },
 
-      // 物资检索
-      searchMaterial($event) {
-        commonApi.getMaterial({ spellCode: $event })
+      // 修改页面跳转
+      updateDispatch($event) {
+        const { shipmentType, id } = $event;
+        let url = '/pages/trucking/MajorCustomApply';
+
+        if (shipmentType === '0201') {
+          url = '/pages/trucking/RetailInverstorApply';
+        }
+
+        uni.navigateTo({
+          url: `${url}?dispatchId=${id}`
+        });
+      },
+
+      // 删除提示信息
+      deleteDispatch($event) {
+        const { dispatchNo } = $event;
+        uni.showModal({
+          title: '提示',
+          content: `是否要删除派车单号为${dispatchNo}的派车单信息?`,
+          success: result => {
+            if (result.confirm) {
+              this.toDeleteDispatch(dispatchNo)
+            }
+          }
+        })
+      },
+
+      toDeleteDispatch(dispatchNo) {
+        truckingOrderApi.deleteDispatch({ dispatchNo })
           .then(result => {
             if (!result.success) {
-              this.materialData = [];
-              return;
-            }
-            this.materialData = [
-              ...result.list
-            ]
+              return uni.showToast({
+                icon: 'none',
+                title: result.msg
+              })
+            };
+
+            this.truckingOrderData = [];
+
+            uni.showToast({
+              icon: 'success',
+              title: result.msg,
+              success: () => {
+                this.getPager();
+              }
+            })
           })
       },
 
@@ -236,6 +210,13 @@
 
         truckingOrderApi.getDispatch(params)
           .then(result => {
+            if (!result.success) {
+              this.truckingOrderData = [];
+              this.completed = true;
+              this.loadStatus = 'noMore';
+              this.close()
+              return;
+            }
             this.truckingOrderData = this.truckingOrderData.concat(result.list);
 
             this.loadStatus = 'more';
@@ -269,6 +250,8 @@
 
   .ui-scroll {
     height: calc(100% - var(--status-bar-height) - 85px);
+    box-sizing: border-box;
+    padding-top: 16px;
   }
 
   /deep/ .uni-card--border {
@@ -297,7 +280,6 @@
       width: 64px;
       font-size: 14px;
       display: inline-block;
-      margin-right: 16px;
       border: 1px solid #007aff;
       color: #007aff;
       background-color: #FFF;
