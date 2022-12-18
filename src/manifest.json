@@ -2,7 +2,7 @@
     "name" : "砂石土监管",
     "appid" : "__UNI__DB52A6F",
     "description" : "砂石土监管",
-    "versionName" : "0.0.2",
+    "versionName" : "0.15",
     "versionCode" : "100",
     "transformPx" : false,
     "app-plus" : {
@@ -89,10 +89,10 @@
             }
         },
         "nativePlugins" : {
-            "PrintModule" : {
+            "LcPrinter" : {
                 "__plugin_info__" : {
-                    "name" : "PrintModule",
-                    "description" : "打印",
+                    "name" : "LcPrinter",
+                    "description" : "connect",
                     "platforms" : "Android",
                     "url" : "",
                     "android_package_name" : "",

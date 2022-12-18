@@ -14,20 +14,30 @@
         :key="index"
         is-shadow
       >
-        <view class="ui-card__content">
-          <view class="ui-list-item">
-            <text style="color: #777777;">派车单号</text>
-            <b style="float: right; color: #252525;">{{ item.dispatchNo }}</b>
+        <view class="ui-card__header">
+          <view class="ui-card__header-title" @click="openQRcode(item)">
+            <text style="color: #777777; padding-right: 6px;">
+              派车单号:
+            </text>
+            <b style="color: #252525;">{{ item.dispatchNo }}</b>
           </view>
-          <view v-for="(v, i) in orderItem" :key="i" class="ui-list-item">
-            <text style="color: #777777;">{{v.title}}</text>
-            <b style="float: right; color: #252525;">{{ item[v.prop] }}</b>
+
+          <view class="ui-card__header-extra">
+            <uni-icons v-if="item.expand" type="bottom" @click="expand(item)"></uni-icons>
+            <uni-icons v-else type="top" @click="expand(item)"></uni-icons>
           </view>
         </view>
-        <div class="ui-card__footer">
-          <button type="primary" class="ui-button--primary" @click="details(item)">查 看</button>
-          <button v-if="item.vehicleStatus === '0'" type="primary" class="ui-button--primary" style="margin-left: 16px;" @click="updateDispatch(item)">修 改</button>
-          <button v-if="item.vehicleStatus === '0'" type="warn" class="ui-button--warn" style="margin-left: 16px;" @click="deleteDispatch(item)">删 除</button>
+        <view class="ui-card__content" @click="details(item)">
+          <template v-for="(v, i) in orderItem">
+            <view v-if="v.hidden || item.expand" :key="i" class="ui-list-item">
+              <text style="color: #777777;">{{v.title}}</text>
+              <b style="float: right; color: #252525;">{{ item[v.prop] }}</b>
+            </view>
+          </template>
+        </view>
+        <div v-if="item.vehicleStatus === '0' && roleType !== '2'" class="ui-card__footer">
+          <button type="primary" class="ui-button--primary" style="margin-left: 16px;" @click="updateDispatch(item)">修 改</button>
+          <button type="warn" class="ui-button--warn" style="margin-left: 16px;" @click="deleteDispatch(item)">删 除</button>
         </div>
       </uni-card>
     </scroll-view>
@@ -40,8 +50,8 @@
       </view>
       <view class="popup-content">
         <uni-forms ref="searchForm" :model="searchForm" label-align="right" label-width="100">
-          <uni-forms-item label="客户信息:">
-            <uni-combox v-model="searchForm.custNo" :candidates="custData" combox="custNo" title="custName" remote placeholder="请输入客户简码进行检索" @input="searchCust"></uni-combox>
+          <uni-forms-item v-if="roleType === '1'" label="处置单位:">
+            <uni-combox v-model="searchForm.custNo" :candidates="custData" combox="custNo" title="custName" remote placeholder="请输入处置单位进行检索" @input="searchCust"></uni-combox>
           </uni-forms-item>
           <uni-forms-item label="物资信息:">
             <uni-combox v-model="searchForm.materialNo" :candidates="materialData" combox="materialCode" title="materialName" remote placeholder="请输入物资简码进行检索" @input="searchMaterial"></uni-combox>
@@ -74,6 +84,10 @@
         </uni-forms>
       </view>
     </uni-popup>
+
+    <uni-popup ref="qrCode" background-color="#fff">
+      <u-qrcode style="margin: 16px;" canvasId="qr" :value="qrCode"></u-qrcode>
+    </uni-popup>
   </view>
 </template>
 
@@ -93,15 +107,30 @@
         businessTypes: truckingOrder.businessTypes,
         vehicleStatus: truckingOrder.vehicleStatus,
         truckingOrderData: [],
-        orderItem: truckingOrder.orderItem
+        orderItem: truckingOrder.orderItem,
+        roleType: '-1',
+        qrCode: null
       }
     },
+
     created() {
+      const user = uni.getStorageSync('userBaseEntity');
+      this.roleType = user.roleType;
+
       this.searchCust();
       this.searchMaterial();
       this.getUnit();
+    },
+
+    onShow() {
+      this.truckingOrderData = [];
+      this.pageNum = 1;
+      Object.assign(this.selectCache, {
+        vehicleStatus: '0'
+      })
       this.getPager();
     },
+
     methods: {
       goBack() {
         uni.reLaunch({
@@ -115,6 +144,15 @@
 
       close() {
         this.$refs.popup.close();
+      },
+
+      expand(item) {
+        item.expand = !item.expand;
+      },
+
+      openQRcode(item) {
+        this.qrCode = item.dispatchNo;
+        this.$refs.qrCode.open('center');
       },
 
       details($event) {
@@ -201,22 +239,36 @@
 
       getPager() {
         const vehicleNo = uni.getStorageSync('vehicleNo');
+        const user = uni.getStorageSync('userBaseEntity');
         const params = {
           ...this.selectCache,
-          // vehicleNo,
           pageNo: this.pageNum,
           pageSize: this.pageSize
         };
 
+        if (user.roleType === '2') {
+          Object.assign(params, {
+            vehicleNo
+          });
+        }
+
+        if (user.roleType === '0') {
+          Object.assign(params, {
+            custNo: user.id
+          })
+        }
+
         truckingOrderApi.getDispatch(params)
           .then(result => {
             if (!result.success) {
-              this.truckingOrderData = [];
               this.completed = true;
               this.loadStatus = 'noMore';
               this.close()
               return;
             }
+
+            result.list.forEach(v => v.expand = false);
+
             this.truckingOrderData = this.truckingOrderData.concat(result.list);
 
             this.loadStatus = 'more';
@@ -259,8 +311,24 @@
     border-radius: 16px !important;
   }
 
+  .ui-card__header {
+    background-color: #FAFAFA;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 16px;
+    border-bottom: 1px solid #FFF;
+
+    &-title {
+      float: left;
+    }
+
+    &-extra {
+      float: right;
+    }
+  }
+
   .ui-card__content {
-    padding: 16px 16px 8px;
+    padding: 8px;
     background-color: #FAFAFA;
 
     border-bottom: 1px solid #FFF;

@@ -28,7 +28,7 @@
           </uni-forms-item>
         </uni-group>
         <uni-group top="0" class="ui-group">
-          <uni-forms-item label="客户信息:">
+          <uni-forms-item label="处置单位:">
             <uni-easyinput v-model="applyForm.custName" type="text" class="uni-input--disabled" :inputBorder="false" disabled />
           </uni-forms-item>
         </uni-group>
@@ -186,10 +186,7 @@
         const keys = {
           orderMainNo: '请选择主合同号!',
           vehicleNo: '请选择车号信息!',
-          driverName: '请输入司机姓名!',
-          preamount: '请输入预装量!',
-          shipmentNum: '请输入发运次数!',
-          isOverLenghFlag: '请选择超长车标志'
+          preamount: '请输入预装量!'
         }
         Object.keys(keys).forEach(v => {
           if (flag) {

@@ -94,7 +94,7 @@
       }
   }, {
     "path": "pages/personal/personal",
-    "style":  {
+    "style": {
        "navigationBarTextStyle": "black",
        "app-plus": {
          "titleNView": {
@@ -103,6 +103,16 @@
            "backgroundColor": "#FFF"
          }
        }
+    }
+  }, {
+    "path": "pages/personal/essential",
+    "style": {
+      "navigationBarTextStyle": "black",
+      "navigationBarBackgroundColor": "#FFF",
+      "app-plus": {
+        "animationType": "fade-in",
+        "titleNView": false
+      }
     }
   }, {
     "path": "pages/project/project",

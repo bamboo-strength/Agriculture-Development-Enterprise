@@ -22,6 +22,7 @@
 </template>
 
 <script>
+  import _ from 'lodash';
   import UserLayout from './UserLayout.vue';
   import { userApi } from '@/api/user';
   import { user } from './user';
@@ -34,10 +35,15 @@
     },
     data() {
       return {
-        userForm: user.userForgetForm,
+        userForm: _.cloneDeep(user.userForgetForm),
         userRule: user.userForgetRule
       }
     },
+    
+    onShow() {
+      this.userForm = _.cloneDeep(user.userForgetForm);
+    },
+    
     methods: {
       submit() {
         this.$refs.userForms.validate((error, form) => {

@@ -17,7 +17,7 @@
         <uni-easyinput v-model="userForm.password" class="ul-input" type="password" trim prefixIcon="locked" placeholder="密码" />
       </uni-forms-item>
       <uni-forms-item v-if="userForm.roleType === 0" name="custNo">
-        <uni-easyinput v-model="userForm.custNo" class="ul-input" type="text" trim prefixIcon="defind iconfont icon-custom" placeholder="客户编号" />
+        <uni-easyinput v-model="userForm.custNo" class="ul-input" type="text" trim prefixIcon="defind iconfont icon-custom" placeholder="处置单位编号" />
       </uni-forms-item>
       <uni-forms-item v-if="userForm.roleType === 2" name="idCard">
         <uni-easyinput v-model="userForm.idCard" class="ul-input" type="text" trim prefixIcon="defind iconfont icon-idCard" placeholder="身份证号" />
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+  import _ from 'lodash';
   import UserLayout from './UserLayout.vue';
   import { userApi } from '@/api/user';
   import { commonApi } from '@/api/common';
@@ -56,15 +57,19 @@
 
     data() {
       return {
-        userForm: user.userForm,
+        userForm: _.cloneDeep(user.userForm),
         userRule: user.userRule,
         unitData: [],
         roleTypes: [
-          { value: 0, text: '客户端' },
-          { value: 1, text: '矿方端' },
+          { value: 0, text: '处置端' },
+          { value: 1, text: '地块端' },
           { value: 2, text: '司机端' }
         ]
       }
+    },
+
+    onShow() {
+      this.userForm = _.cloneDeep(user.userForm);
     },
 
     created() {
@@ -107,22 +112,11 @@
           if (this.userRule.idCard) delete this.userRule.idCard;
           if (this.userRule.vehicleNo) delete this.userRule.vehicleNo;
           if (this.userRule.organizationId) delete this.userRule.organizationId;
-          Object.assign(this.userRule, {
-            custNo: {
-              rules: [
-                {
-                  required: true,
-                  errorMessage: '请输入客户编号'
-                }
-              ]
-            }
-          })
         }
 
         if ($event === 1) {
           if (this.userRule.idCard) delete this.userRule.idCard;
           if (this.userRule.vehicleNo) delete this.userRule.vehicleNo;
-          if (this.userRule.custNo) delete this.userRule.custNo;
           Object.assign(this.userRule, {
             organizationId: {
               rules: [
@@ -136,7 +130,6 @@
         }
 
         if ($event === 2) {
-          if (this.userRule.custNo) delete this.userRule.custNo;
           if (this.userRule.organizationId) delete this.userRule.organizationId;
           Object.assign(this.userRule, {
             idCard: {

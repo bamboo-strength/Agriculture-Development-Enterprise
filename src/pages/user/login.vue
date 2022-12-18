@@ -23,6 +23,7 @@
 </template>
 
 <script>
+  import _ from 'lodash';
   import UserLayout from './UserLayout.vue';
   import { user } from './user';
   import axios from 'axios';
@@ -35,7 +36,7 @@
     },
     data() {
       return {
-        userForm: user.userLoginForm,
+        userForm: _.cloneDeep(user.userLoginForm),
         userRule: user.userLoginRule,
         remember: [],
         localData: [
@@ -49,6 +50,10 @@
         Object.assign(this.userForm, userForm);
         this.remember.push(0)
       }
+    },
+
+    onShow() {
+      this.userForm = _.cloneDeep(user.userLoginForm);
     },
     methods: {
       submit() {

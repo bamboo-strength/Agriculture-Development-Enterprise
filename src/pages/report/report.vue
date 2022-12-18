@@ -121,7 +121,6 @@
         reportApi.getProject(params)
           .then(result => {
             if (!result.success) {
-              this.reportData = [];
               this.completed = true;
               this.loadStatus = 'noMore';
               this.close()

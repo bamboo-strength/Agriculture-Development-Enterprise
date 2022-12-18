@@ -25,7 +25,10 @@
         </uni-group>
         <uni-group top="0" class="ui-group">
           <uni-forms-item label="客户信息:">
-            <uni-combox v-model="applyForm.custNo" :candidates="custData" combox="custNo" title="custName" remote :border="false" placeholder="请输入客户简码进行检索" @input="searchCust"></uni-combox>
+            <text v-if="roleType === '0'" style="height: 36px; line-height: 36px;">
+              {{ applyForm.custName }}
+            </text>
+            <uni-combox v-else v-model="applyForm.custNo" :candidates="custData" combox="custNo" title="custName" remote :border="false" placeholder="请输入客户简码进行检索" @input="searchCust"></uni-combox>
           </uni-forms-item>
         </uni-group>
         <uni-group top="0" class="ui-group">
@@ -99,11 +102,22 @@
         applyForm: _.cloneDeep(truckingOrder.rApplyForm),
         vehicleDisable: true,
         isOverStatus: truckingOrder.isOverStatus,
-        dispatchId: null
+        dispatchId: null,
+        roleType: '-1'
       }
     },
 
     created() {
+      const user = uni.getStorageSync('userBaseEntity');
+      this.roleType = user.roleType;
+      
+      if (user.roleType === '0') {
+        Object.assign(this.applyForm, {
+          custNo: user.id,
+          custName: user.userName
+        })
+      }
+      
       this.searchVehicle();
       this.searchCust();
       this.searchMaterial();

@@ -36,7 +36,7 @@
       </view>
       <view class="popup-content">
         <uni-forms ref="searchForm" :model="searchForm" class="ui-forms-inline" label-align="right" label-width="100">
-          <uni-forms-item label="客户信息:">
+          <uni-forms-item v-if="roleType !== '0'" label="处置单位:">
             <uni-combox v-model="searchForm.custNo" :candidates="custData" combox="custNo" title="custName" remote placeholder="请输入客户简码进行检索" @input="searchCust"></uni-combox>
           </uni-forms-item>
           <uni-forms-item label="物资信息:">
@@ -82,11 +82,15 @@
         contractData: [],
         searchForm: _.cloneDeep(Contract.searchForm),
         contractItem: Contract.contractItem,
-        selector: -1
+        selector: -1,
+        roleType: '-1'
       };
     },
 
     created() {
+      const user = uni.getStorageSync('userBaseEntity');
+      this.roleType = user.roleType;
+
       this.searchCust();
       this.searchMaterial();
       this.getUnit();
@@ -99,16 +103,22 @@
       },
 
       getPager() {
+        const user = uni.getStorageSync('userBaseEntity');
         const params = {
           ...this.selectCache,
           pageNo: this.pageNum,
           pageSize: this.pageSize
         };
+        
+        if (user.roleType === '0') {
+          Object.assign(params, {
+            custNo: user.id
+          })
+        }
 
         commonApi.getSaleOrder(params)
           .then(result => {
             if (!result.success) {
-              this.contractData = [];
               this.completed = true;
               this.loadStatus = 'noMore';
               this.close()

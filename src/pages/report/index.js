@@ -19,10 +19,10 @@ const reportItem = [
     '0': '未开工',
     '1': '已开工'
   } },
-  { title: '项目规模', prop: 'projectScale' },
+  { title: '处置金额', prop: 'projectScale' },
   { title: '评估单位', prop: 'evaluationunit' },
   { title: '单价', prop: 'price', suffix: '元' },
-  { title: '中标单位', prop: 'winunit' },
+  { title: '处置单位', prop: 'winunit' },
   { title: '运输单位', prop: 'transportunit' },
   { title: '转让单位', prop: 'transferunit' },
   { title: '中标单价', prop: 'unitprice', suffix: '元' }

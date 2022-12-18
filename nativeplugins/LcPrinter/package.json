@@ -1,15 +1,15 @@
 {
-	"name": "TestText",
-	"id": "TestText",
-	"version": "0.2",
+	"name": "LcPrinter",
+	"id": "LcPrinter",
+	"version": "0.14",
 	"description": "connect",
 	"_dp_type": "nativeplugin",
 	"_dp_nativeplugin": {
 		"android": {
 			"plugins": [{
 				"type": "module",
-				"name": "TestText",
-				"class": "io.dcloud.uniplugin.TestText"
+				"name": "LcPrinter",
+				"class": "com.main.lcprinter.PrintModule"
 			}],
 			"hooksClass": "",
 			"integrateType": "aar",
